@@ -172,6 +172,19 @@ func (s *server) gatherData() {
 	}
 }
 
+type HTTPHandler interface {
+	HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request))
+}
+
+func RegisterHandlers(h HTTPHandler) {
+	h.HandleFunc("/debug/charts/data-feed", s.dataFeedHandler)
+	h.HandleFunc("/debug/charts/data", dataHandler)
+	h.HandleFunc("/debug/charts/", handleAsset("static/index.html"))
+	h.HandleFunc("/debug/charts/main.js", handleAsset("static/main.js"))
+	h.HandleFunc("/debug/charts/jquery-2.1.4.min.js", handleAsset("static/jquery-2.1.4.min.js"))
+	h.HandleFunc("/debug/charts/moment.min.js", handleAsset("static/moment.min.js"))
+}
+
 func init() {
 	http.HandleFunc("/debug/charts/data-feed", s.dataFeedHandler)
 	http.HandleFunc("/debug/charts/data", dataHandler)
